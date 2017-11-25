@@ -173,5 +173,33 @@ namespace TSP_DepthBreadthFirst
                 bestList.Add(node);
             }
         }
+
+        void DepthFirstSearch(List<Node> nodeList, int[,] adjList, int k)
+        {
+            if (nodeList[0].getVisited() == false)
+            {
+                nodeList[0].setVisited();
+                stack.Push(nodeList[0].getIndex());
+                DepthFirstSearch(nodeList, adjList, 0);
+            }
+
+            for (int i = k; i < nodeList.Count; ++i)
+            {
+                for (int j = 0; j < nodeList.Count; ++j)
+                {
+                    if (adjList[i, j] == 1 && nodeList[i].getVisited() == false)
+                    {
+                        stack.Push(nodeList[j].getIndex());
+                        DepthFirstSearch(nodeList, adjList, j);
+                    }
+                    //If goal state 11 is reached
+                    if (i == nodeList.Count - 1)
+                    {
+
+                    }
+                }
+
+            }
+        }
     }
 }
