@@ -58,9 +58,9 @@ namespace TSP_DepthBreadthFirst
         {
             this.y = y;
         }
-        public void setVisited()
+        public void setVisited(bool x)
         {
-            this.visited = true;
+            this.visited = x;
         }
 
 
