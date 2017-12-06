@@ -30,14 +30,6 @@ namespace TSP_DepthBreadthFirst
         }
         public static void DFS(int v)
         {
-            if (nStack.Any() == false)
-            {
-                nStack.Push(nodeList[0].getIndex());
-                pStack.Push(nodeList[0].getIndex());
-
-                nodeList[0].setVisited(true);
-                DFS(0);
-            }
             if(v == nodeList.Count - 1)
             {
                 List<int> arr = new List<int>();
@@ -67,37 +59,57 @@ namespace TSP_DepthBreadthFirst
             {   
                 for (int j = 0; j < adjList[v].Count(); ++j)
                 {
-                    if (adjList[v][j].getVisited() == false)
+                    if (nStack.Count() != 0)
                     {
-                        nStack.Push(adjList[v][j].getIndex());
-                        pStack.Push(adjList[v][j].getIndex());
-
-                        adjList[v][j].setVisited(true);
-                        for (int l = nStack.Peek(); l < nodeList.Count; ++l)
+                        if (adjList[v][j].getVisited() == false)
                         {
-                            nodeList[l].setVisited(false);
+                            nStack.Push(adjList[v][j].getIndex());
+                            pStack.Push(adjList[v][j].getIndex());
+
+                            adjList[v][j].setVisited(true);
+                            for (int l = nStack.Peek(); l < nodeList.Count; ++l)
+                            {
+                                nodeList[l].setVisited(false);
+                            }
+                            DFS(adjList[v][j].getIndex() - 1);
                         }
-                        DFS(adjList[v][j].getIndex() - 1);
                     }
+                        
                     //If node directly connects to goal state
-                    if (adjList[v][j].getIndex() == nodeList.Count() && adjList[v].Count > 1 && adjList[v][j].getVisited() == false)
+                    if(nStack.Count() != 0)
                     {
-                        nStack.Push(adjList[v][j].getIndex());
-                        pStack.Push(adjList[v][j].getIndex());
-                        DFS(nStack.Peek() - 1);
+                        if (adjList[v][j].getIndex() == nodeList.Count() && adjList[v].Count > 1 && adjList[v][j].getVisited() == false)
+                        {
+                            nStack.Push(adjList[v][j].getIndex());
+                            pStack.Push(adjList[v][j].getIndex());
+                            DFS(nStack.Peek() - 1);
+                        }
                     }
-
                 }
-                for (int l = nStack.Peek(); l < nodeList.Count; ++l)
-                {
-                    nodeList[l].setVisited(false);
-                }
-
-                nStack.Pop();
-                pStack.Pop();
                 if (nStack.Any())
                 {
-                    DFS(nStack.Peek() - 1);
+                    for (int l = nStack.Peek(); l < nodeList.Count; ++l)
+                    {
+                        nodeList[l].setVisited(false);
+                    }
+                }
+
+                if (nStack.Any())
+                {
+                    nStack.Pop();
+                    pStack.Pop();
+                    if (nStack.Any())
+                    {
+                        DFS(nStack.Peek() - 1);
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    return;
                 }
             }
         }
@@ -197,8 +209,14 @@ namespace TSP_DepthBreadthFirst
             //    Console.Write(node.ToString());
             //}
             //Console.Write(" Distance: " + bestDistance);
+            if (nStack.Any() == false)
+            {
+                nStack.Push(nodeList[0].getIndex());
+                pStack.Push(nodeList[0].getIndex());
 
-            DFS(0);
+                nodeList[0].setVisited(true);
+                DFS(0);
+            }
             Console.ReadKey();
         }//End Main()
 
