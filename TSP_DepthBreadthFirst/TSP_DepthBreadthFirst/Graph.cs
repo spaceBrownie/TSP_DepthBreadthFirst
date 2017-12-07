@@ -9,6 +9,7 @@ namespace TSP_DepthBreadthFirst
     class Graph
     {
         public int vertices;
+        public static List<List<double>> edgeDistance = new List<List<double>>();
         public static List<List<Node>> adjList = new List<List<Node>>();
         public static List<Node> nodeList = new List<Node>();
         public static Stack<int> nStack = new Stack<int>();
@@ -24,9 +25,10 @@ namespace TSP_DepthBreadthFirst
             if (v > adjList.Count())
             {
                 adjList.Add(new List<Node>());
+                edgeDistance.Add(new List<double>());
             }
             adjList[v-1].Add(nodeList[e-1]);
-            
+            edgeDistance[v - 1].Add(getDistance(v, e));
         }
         public static void DFS(int v)
         {
@@ -114,6 +116,18 @@ namespace TSP_DepthBreadthFirst
             }
         }
 
+        public static double getDistance(int v, int e)
+        {
+            double x;
+            double y;
+            double distance;
+
+            x = Math.Pow(nodeList[e - 1].getXPos() - nodeList[v - 1].getXPos(), 2);
+            y = Math.Pow(nodeList[e - 1].getYPos() - nodeList[v - 1].getYPos(), 2);
+
+            distance = Math.Sqrt(x + y);
+            return distance;
+        }
         static void Main(string[] args)
         {
             string path;
@@ -161,6 +175,7 @@ namespace TSP_DepthBreadthFirst
                 Console.WriteLine("The Node " + node.getIndex() + " (" + node.getXPos() + "," + node.getYPos() + ") has been added");
             }
 
+#region Add Edges to Graph
             Graph graph = new Graph();
             graph.AddEdge(1, 2);
             graph.AddEdge(1, 3);
@@ -181,6 +196,7 @@ namespace TSP_DepthBreadthFirst
             graph.AddEdge(8, 11);
             graph.AddEdge(9, 11);
             graph.AddEdge(10, 11);
+#endregion
 
             /*Print Connected nodes*/
             for (int i = 0; i < nodeList.Count-1; i++)
@@ -220,48 +236,48 @@ namespace TSP_DepthBreadthFirst
             Console.ReadKey();
         }//End Main()
 
-        private static void getDistance(List<Node> list, ref List<Node> bestList, ref double bestD)
-        {
-            double adjDistance = 0;
-            double cycleDistance = 0;
+        //private static void getDistance(List<Node> list, ref List<Node> bestList, ref double bestD)
+        //{
+        //    double adjDistance = 0;
+        //    double cycleDistance = 0;
 
-            //Calculate distance traveled between each node in a permutated list
-            for (int i = 0; i < list.Count() - 1; i++)
-            {
-                adjDistance = Math.Sqrt(Math.Pow((Convert.ToDouble(list[i + 1].getXPos()) - Convert.ToDouble(list[i].getXPos())), 2)
-                    + Math.Pow((Convert.ToDouble(list[i + 1].getYPos()) - Convert.ToDouble(list[i].getYPos())), 2));
-                cycleDistance += adjDistance;
+        //    //Calculate distance traveled between each node in a permutated list
+        //    for (int i = 0; i < list.Count() - 1; i++)
+        //    {
+        //        adjDistance = Math.Sqrt(Math.Pow((Convert.ToDouble(list[i + 1].getXPos()) - Convert.ToDouble(list[i].getXPos())), 2)
+        //            + Math.Pow((Convert.ToDouble(list[i + 1].getYPos()) - Convert.ToDouble(list[i].getYPos())), 2));
+        //        cycleDistance += adjDistance;
 
-                //Add distance from last node to first node to total distance traveled
-                if (i == list.Count() - 2)
-                {
+        //        //Add distance from last node to first node to total distance traveled
+        //        if (i == list.Count() - 2)
+        //        {
 
-                    adjDistance = Math.Sqrt(Math.Pow((Convert.ToDouble(list[0].getXPos()) - Convert.ToDouble(list[i + 1].getXPos())), 2)
-                    + Math.Pow((Convert.ToDouble(list[0].getYPos()) - Convert.ToDouble(list[i + 1].getYPos())), 2));
-                    cycleDistance += adjDistance;
-                }
-            }
+        //            adjDistance = Math.Sqrt(Math.Pow((Convert.ToDouble(list[0].getXPos()) - Convert.ToDouble(list[i + 1].getXPos())), 2)
+        //            + Math.Pow((Convert.ToDouble(list[0].getYPos()) - Convert.ToDouble(list[i + 1].getYPos())), 2));
+        //            cycleDistance += adjDistance;
+        //        }
+        //    }
 
-            //If bestDistance is uninitialized, set to first distance value
-            if (bestD == 0)
-            {
-                bestD = cycleDistance;
-            }
+        //    //If bestDistance is uninitialized, set to first distance value
+        //    if (bestD == 0)
+        //    {
+        //        bestD = cycleDistance;
+        //    }
 
-            //Check to see if a new bestDistance has been found
-            else
-            {
-                if (cycleDistance < bestD)
-                {
-                    bestD = cycleDistance;
-                    bestList.Clear();
-                    getBestList(list, ref bestList);
-                }
-                else
-                {
-                }
-            }
-        }
+        //    //Check to see if a new bestDistance has been found
+        //    else
+        //    {
+        //        if (cycleDistance < bestD)
+        //        {
+        //            bestD = cycleDistance;
+        //            bestList.Clear();
+        //            getBestList(list, ref bestList);
+        //        }
+        //        else
+        //        {
+        //        }
+        //    }
+        //}
 
         private static void getBestList(List<Node> list, ref List<Node> bestList)
         {
